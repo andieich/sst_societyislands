@@ -15,7 +15,6 @@ editor: visual
 #| output: false
 library(tidyverse)
 library(geomtextpath)
-library(plotly)
 ```
 
 ```{r}
@@ -64,9 +63,14 @@ p <- data_clim_clim %>%
   geom_texthline(yintercept = mmm+1, col = 'salmon', label = "Bleaching threshold", hjust = 1)+
   
    geom_line(data = data_2_month, aes(x = date, y = sst_min) , linewidth = 1, col = 'darkblue')+
+  geom_line(data = data_2_month, aes(x = date, y = sst_90th_hs) , linewidth = 1, col = 'black')+
   
   geom_line(data = data_2_month, aes(x = date, y = sst_max), linewidth = 1, col = 'darkred')+
-
+  annotate("text",
+           x = last(data_2_month$date),
+           y = last(data_2_month$sst_90th_hs),
+           label = "SST",
+           col = 'black', hjust = -0.1)+
 
   annotate("text",
            x = last(data_2_month$date),
