@@ -1,0 +1,95 @@
+---
+execute:
+  echo: false
+  warning: false
+format: 
+  html:
+    page-layout: full
+project:
+  type: website
+  output-dir: docs
+editor: visual
+---
+
+```{r}
+#| output: false
+library(tidyverse)
+library(geomtextpath)
+library(plotly)
+```
+
+```{r}
+lines <- readLines("https://coralreefwatch.noaa.gov/product/vs/data/society_archipelago.txt")
+
+mmm <- as.numeric(lines[11])
+```
+
+```{r}
+data <-  read.table(text = lines, skip = 21, header = T) %>% 
+  janitor::clean_names() %>% 
+  mutate(date = ymd(paste(yyyy, mm, dd)))
+```
+
+```{r}
+#climatology
+data_clim <- data %>% 
+  filter(yyyy < 2024) %>% 
+  mutate(date = ymd(paste(2024, mm, dd))) 
+```
+
+```{r}
+#Plot last 2 month
+now = Sys.Date()
+
+minus_two_month = now - 61
+plus_two_month = now + 61
+```
+
+```{r}
+data_2_month <- data %>% 
+  filter(date > minus_two_month)
+
+
+data_clim_clim <- data_clim %>% 
+  filter(date > minus_two_month, date < plus_two_month)
+
+
+last_x <- last(data_2_month$date)
+  
+p <- data_clim_clim %>% 
+  ggplot()+
+  geom_line(aes(x = date, y = sst_max,  group = yyyy), col = 'grey80')+
+  
+  geom_texthline(yintercept = mmm, linetype = 'dashed', col = 'grey20', label = "MMM", hjust = 1)+
+  geom_texthline(yintercept = mmm+1, col = 'salmon', label = "Bleaching threshold", hjust = 1)+
+  
+   geom_line(data = data_2_month, aes(x = date, y = sst_min) , linewidth = 1, col = 'darkblue')+
+  
+  geom_line(data = data_2_month, aes(x = date, y = sst_max), linewidth = 1, col = 'darkred')+
+
+
+  annotate("text",
+           x = last(data_2_month$date),
+           y = last(data_2_month$sst_max),
+           label = "SST max"
+           , col = 'darkred', hjust = -0.1)+
+
+  annotate("text",
+           x = last(data_2_month$date),
+           y = last(data_2_month$sst_min),
+           label = "SST max",
+           col = 'darkblue', hjust = -0.1)+
+  
+  scale_x_date(date_labels = "%d.%m.%y")+
+  labs(x = NULL, y = 'SST (°C)', title = paste('Society Archipelago -', now), caption = 'Grey lines: Data since 1985')+
+  theme_minimal()
+  
+```
+
+```{r}
+#| fig-width: 9
+#| fig-height: 5
+p
+```
+
+\
