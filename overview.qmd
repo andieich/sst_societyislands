@@ -14,7 +14,6 @@ editor: visual
 ```{r}
 #| output: false
 library(tidyverse)
-library(geomtextpath)
 ```
 
 ```{r}
@@ -59,8 +58,21 @@ p <- data_clim_clim %>%
   ggplot()+
   geom_line(aes(x = date, y = sst_max,  group = yyyy), col = 'grey80')+
   
-  geom_texthline(yintercept = mmm, linetype = 'dashed', col = 'grey20', label = "MMM", hjust = 1)+
-  geom_texthline(yintercept = mmm+1, col = 'salmon', label = "Bleaching threshold", hjust = 1)+
+  geom_hline(yintercept = mmm, linetype = 'dashed', col = 'grey20',  hjust = 1)+
+  geom_hline(yintercept = mmm+1, col = 'salmon', hjust = 1)+
+  
+  annotate("text",
+           x = last(data_clim_clim$date),
+           y = mmm,
+           label = "MMM",
+           col = 'grey20', hjust = 1, vjust = -.5)+
+  
+  annotate("text",
+           x = last(data_clim_clim$date),
+           y = mmm+1,
+           label = "Bleaching threshold",
+           col = 'salmon', hjust = 1, vjust = -.5)+
+  
   
    geom_line(data = data_2_month, aes(x = date, y = sst_min) , linewidth = 1, col = 'darkblue')+
   geom_line(data = data_2_month, aes(x = date, y = sst_90th_hs) , linewidth = 1, col = 'black')+
@@ -85,8 +97,9 @@ p <- data_clim_clim %>%
            col = 'darkblue', hjust = -0.1)+
   
   scale_x_date(date_labels = "%d.%m.%y")+
-  labs(x = NULL, y = 'SST (°C)', title = paste('Society Archipelago -', now), caption = 'Grey lines: Data since 1985')+
-  theme_minimal()
+  labs(x = NULL, y = 'SST (°C)', title = 'Society Archipelago', caption = paste("Last update:", format(Sys.time(), "%d.%m.%Y %H:%M:%S %Z")))+
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5, face = 'bold'))
   
 ```
 
