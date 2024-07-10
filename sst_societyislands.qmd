@@ -14,7 +14,9 @@ editor: visual
 
 ```{r}
 #| output: false
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
 library(janitor)
 ```
 
