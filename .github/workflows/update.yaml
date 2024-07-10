@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '30 0 * * *'
+    - cron: '*/10 * * * *'
 
 jobs:
   update-report:
@@ -9,6 +9,14 @@ jobs:
       contents: write
       pages: write
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
@@ -18,13 +26,7 @@ jobs:
           packages: |
             any::tidyverse 
             any::janitor 
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Check out repository
-        uses: actions/checkout@v3
-        
+            
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
