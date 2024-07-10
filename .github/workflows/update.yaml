@@ -1,6 +1,7 @@
 on:
-  schedule:
-    - cron: '*/10 * * * *'
+  push:
+    branches:
+      - main  # Change this to your default branch
 
 jobs:
   update-report:
