@@ -33,15 +33,19 @@ data <-  read.table(text = lines, skip = 21, header = T) %>%
 ```
 
 ```{r}
+now <- Sys.Date()
+
 #climatology
+
+year_now <- year(now)
 data_clim <- data %>% 
-  filter(yyyy < 2024) %>% 
-  mutate(date = ymd(paste(2024, mm, dd))) 
+  filter(yyyy < year_now) %>% 
+  mutate(date = ymd(paste(year_now, mm, dd))) 
 ```
 
 ```{r}
 #Plot last 2 month
-now = Sys.Date()
+
 
 minus_two_month = now - 61
 plus_two_month = now + 61
@@ -62,8 +66,8 @@ p <- data_clim_clim %>%
   ggplot()+
   geom_line(aes(x = date, y = sst_max,  group = yyyy), col = 'grey80')+
   
-  geom_hline(yintercept = mmm, linetype = 'dashed', col = 'grey20',  hjust = 1)+
-  geom_hline(yintercept = mmm+1, col = 'salmon', hjust = 1)+
+  geom_hline(yintercept = mmm, linetype = 'dashed', col = 'grey20')+
+  geom_hline(yintercept = mmm+1, col = 'salmon')+
   
   annotate("text",
            x = last(data_clim_clim$date),
